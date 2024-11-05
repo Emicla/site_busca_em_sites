@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Buscas Multiplas</title>
+
+        <style>
+            * { 
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                background-color: #afbbdd;
+            }
+
+            form {
+                display: inline-block;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                padding: 40px 70px;
+                border: none;
+                border-radius: 30px;
+                font-family: Arial, Helvetica, sans-serif;
+                background-color: rgb(17, 73, 122);
+                color: #FFFFFF;
+            }
+
+            input {
+                padding: 7px 8px;
+                border-radius: 4px;
+                border-width: 1px;
+            }
+
+            section {
+                margin: 40px 0;
+            }
+
+            section div {
+                display: inline-block;
+            }
+
+            section p {
+                font-weight: bold;
+            }
+
+            #opcoes_pequisa {
+                margin-top: 20px;
+                background-color: #ffffff;
+                border-radius: 10px;
+                padding: 5px 10px;
+                text-align: center;
+            }
+
+            #opcoes_pequisa div{
+                text-align: center;
+            }
+
+            img {
+                width: 70px;
+                cursor: pointer;
+                border-radius: 10px;
+                padding: 10px;
+            }
+
+            img:active {
+                background-color: rgb(85, 255, 107);
+            }
+
+            #opcoes_pequisa input {
+                display: none;
+            }
+
+            [type="submit"] {
+                margin-top: 30px;
+                padding: 10px;
+                cursor: pointer;
+                background-color: rgb(32, 63, 99);
+                outline: 1px solid aqua;
+                border: none;
+                color: #FFFFFF;
+            }
+
+            [type="submit"]:hover {
+                background-color: rgb(0, 153, 255);
+                color: #FFFFFF;
+                padding: 13px;
+                transition: all 300ms;
+                font-size: 15px;
+                outline: none;
+            }
+
+            .selecionado {
+                background-color: rgb(85, 255, 107);
+            }
+        </style>
+    </head>
+    <body>
+        <form method="GET" action="" onsubmit="return validarForms()">
+            <label for="campo">Buscar:</label>
+            <input type="text" name="v" placeholder="Pesquisa" id="campo">
+
+            <section>
+                <p>Escolha onde pesquisar</p>
+                
+                <div id="opcoes_pequisa">
+                    <div>
+                        <label for="google">
+                            <img src="./imgs/icon_google.png" alt="google" onclick="selecionar(this)">
+                        </label>
+                        <input type="checkbox" name="opcao_pequisa" id="google" value="google">
+                    </div>
+
+                    <div>
+                        <label for="youtube">
+                            <img src="./imgs/youtube.png" alt="youtube" onclick="selecionar(this)">
+                        </label>
+                        <input type="checkbox" name="opcao_pequisa" id="youtube" value="youtube">
+                    </div>
+
+                    <div>
+                        <label for="github">
+                            <img src="./imgs/github.png" alt="github" onclick="selecionar(this)">
+                        </label>
+                        <input type="checkbox" name="opcao_pequisa" id="github" value="github">
+                    </div>
+                </div>
+            </section>
+
+            <div>
+                <input type="checkbox" name="abrir_abas" value="true" id="fechar_aba">
+                <label for="fechar_aba">Fechar aba quando pesquisar</label>
+            </div>
+
+            <input type="submit" value="Pesquisar">
+        </form>
+    </body>
+</html>
+<script>
+    const inputPesquisa = document.querySelector("[type=text]");
+    const opcoesPesquisa = document.querySelector("#opcoes_pequisa").querySelectorAll("input");
+    const fecharAba = document.querySelector("#fechar_aba");
+
+    const links = {
+        google: "https://www.google.com/search?q=",
+        youtube: "https://www.youtube.com/results?search_query=",
+        github: "https://github.com/search?q="
+    };
+
+    function selecionar(tag) {
+        if (tag.className == "selecionado") {
+            tag.className = ""
+
+        } else {
+            tag.className = "selecionado";
+        }
+    }
+
+    function abrirAbas(link) {
+        const a = document.createElement("a");
+        a.href = link;
+        a.target = "_blank";
+        // a.click();
+        let simulaClickMouse = (ctrl, shift, isMiddle, elemento) => {
+            let evt = document.createEvent('MouseEvents');
+            evt.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, ctrl, false, shift, false, isMiddle ? 1 : 0, null );
+            elemento.dispatchEvent(evt);
+        };
+
+        simulaClickMouse(true, false, false, a);
+    }
+
+    function validarForms() {
+        opcoesPesquisa.forEach((opcao) => {
+            if (opcao.checked) {
+                abrirAbas(links[opcao.value] + inputPesquisa.value);
+            }
+        });
+
+        if (fecharAba.checked) {
+            close();
+        }
+
+        return false;
+    }
+</script>
